@@ -55,9 +55,6 @@
       <span>{{ (games.games | filter: {CategoryID: category} : exactMatch | filter: {MerchantID: merchant} | filter: filterFavorites).length }}</span>
       out of <span>{{games.games.length}}</span> games.</div>
 
-    <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true">
-    </dir-pagination-controls>
-
     <ul class="games">
       <li
         dir-paginate="game in games.games | orderBy: sortColumn : reverseSort | orderBy: showFavoriteFirst | filter: {CategoryID: category} : exactMatch | filter: {MerchantID: merchant} | filter: filterFavorites | itemsPerPage: gamesOnPage"
@@ -80,6 +77,9 @@
       </li>
     </ul>
   </div>
+
+  <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true">
+  </dir-pagination-controls>
 
   <script src="lib/angular/angular.min.js"></script>
   <script src="app.js"></script>
