@@ -1,0 +1,116 @@
+body {
+  padding: 40px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.filters {
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.filters__item {
+  margin-right: 30px;
+}
+
+.info {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.games {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.games__item {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.games__info {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  margin-bottom: 10px;
+}
+
+.games__info span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.games__info span:hover {
+  cursor: default;
+}
+
+.games__info img {
+  width: 100%;
+}
+
+.games__buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.games__start {
+  width: 100px;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #5cb85c;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  outline: none;
+  text-align: center;
+}
+
+.games__start:hover,
+.games__start:visited {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.games__start:active {
+  background-color: #5cb85cc9;
+}
+
+.games__checkbox + label {
+  display: flex;
+  margin: 0;
+}
+
+.games__checkbox + label svg {
+  fill: #ffffff;
+}
+
+.games__checkbox:checked + label svg {
+  fill: #fbff00
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pager button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
