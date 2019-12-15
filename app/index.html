@@ -12,70 +12,64 @@
 
 <body ng-app="myModule">
   <div ng-controller="myController">
-    <div class="filters">
-      <div class="filters__item">
-        Games on Page:
-        <select ng-model="gamesOnPage">
-          <option ng-value="30">30</option>
-          <option ng-value="50">50</option>
-          <option ng-value="100">100</option>
-          <option ng-value="200">200</option>
-        </select>
+    <div >
+      <div class="filters">
+        <div class="filters__item">
+          Games on Page:
+          <select ng-model="gamesOnPage" ng-options="gamesOnPage.text for gamesOnPage in gamesOnPageValues track by gamesOnPage.value"></select>
+        </div>
+        <div class="filters__item">
+          Sort By:
+          <select ng-model="sortColumn" ng-change="resetReverseSort()" ng-options="sortColumn.text for sortColumn in sortColumnValues track by sortColumn.value"></select>
+          <select ng-model="reverseSort" ng-options="reverseSort.text for reverseSort in reverseSortValues track by reverseSort.value"></select>
+        </div>
+        <div class="filters__item">
+          Sort by category:
+          <select ng-model="category" ng-change="toggleExactMatch(category)">
+            <option value="">All Categories</option>
+            <option ng-repeat="category in games.categories" value="{{ category.ID }}">{{ category.Name.en }}</option>
+          </select>
+        </div>
+        <div class="filters__item">
+          Sort by merchant:
+          <select ng-model="merchant">
+            <option value="">All Merchants</option>
+            <option ng-repeat="merchant in games.merchants" value="{{ merchant.ID }}">{{ merchant.Name }}</option>
+          </select>
+        </div>
+        <div class="filters__item">
+          <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()"> Favorites only
+        </div>
       </div>
-      <div class="filters__item">
-        Sort By:
-        <select ng-model="sortColumn" ng-change="resetReverseSort()">
-          <option value="Name.en">Name</option>
-          <option value="MerchantID">Merchant</option>
-        </select>
-        <select ng-model="reverseSort">
-          <option ng-value="false">ASC</option>
-          <option ng-value="true">DESC</option>
-        </select>
-      </div>
-      <div class="filters__item">
-        Sort by category:
-        <select ng-model="category" ng-change="toggleExactMatch(category)">
-          <option value="">All Categories</option>
-          <option ng-repeat="category in games.categories" value="{{ category.ID }}">{{ category.Name.en }}</option>
-        </select>
-      </div>
-      <div class="filters__item">
-        Sort by merchant:
-        <select ng-model="merchant">
-          <option value="">All Merchants</option>
-          <option ng-repeat="merchant in games.merchants" value="{{ merchant.ID }}">{{ merchant.Name }}</option>
-        </select>
-      </div>
-      <div class="filters__item">
-        <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()"> Favorites only
-      </div>
-    </div>
-    <div class="info">Filtered
-      <span>{{ (games.games | filter: {CategoryID: category} : exactMatch | filter: {MerchantID: merchant} | filter: filterFavorites).length }}</span>
-      out of <span>{{games.games.length}}</span> games.</div>
+      <div class="info">Filtered
+        <span>{{ (games.games | gamesFilter: this).length }}</span>
+        out of <span>{{games.games.length}}</span> games.</div>
 
-    <ul class="games">
-      <li
-        dir-paginate="game in games.games | orderBy: sortColumn : reverseSort | orderBy: showFavoriteFirst | filter: {CategoryID: category} : exactMatch | filter: {MerchantID: merchant} | filter: filterFavorites | itemsPerPage: gamesOnPage"
-        class="games__item">
-        <div class="games__info">
-          <span title="{{game.Name.en}}">{{game.Name.en}}</span>
-          <img ng-src="{{game.ImageFullPath}}" alt="{{game.Name.en}}">
-        </div>
-        <div class="games__buttons">
-          <a href="#!games/{{game.ID}}" class="games__start">START</a>
-          <input type="checkbox" class="visually-hidden games__checkbox" id="g{{game.ID}}"
-            ng-model="favoriteCheckboxes[game.ID]" ng-change="favoriteAction(favoriteCheckboxes[game.ID], game.ID)">
-          <label class="games__favorite" for="g{{game.ID}}">
-            <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 50 50">
-              <path stroke="#ffbb00" stroke-miterlimit="10" stroke-width="2"
-                d="M25 3.553l5.695 14.768 15.805.852-12.286 9.98 4.073 15.295L25 35.848l-13.288 8.6 4.074-15.295L3.5 19.173l15.805-.852z" />
-            </svg>
-          </label>
-        </div>
-      </li>
-    </ul>
+      <ul class="games">
+        <li
+        dir-paginate="game in games.games | orderBy: sortColumn.value : reverseSort.value | orderBy: showFavoriteFirst | gamesFilter: this | itemsPerPage: gamesOnPage.value"
+          class="games__item">
+          <div class="games__info">
+            <span title="{{game.Name.en}}">{{game.Name.en}}</span>
+            <img ng-src="{{game.ImageFullPath}}" alt="{{game.Name.en}}">
+          </div>
+          <div class="games__buttons">
+            <a href="#!games/{{game.ID}}" class="games__start">START</a>
+            <input type="checkbox" class="visually-hidden games__checkbox" id="g{{game.ID}}"
+              ng-model="favoriteCheckboxes[game.ID]" ng-change="favoriteAction(favoriteCheckboxes[game.ID], game.ID)">
+            <label class="games__favorite" for="g{{game.ID}}">
+              <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 50 50">
+                <path stroke="#ffbb00" stroke-miterlimit="10" stroke-width="2"
+                  d="M25 3.553l5.695 14.768 15.805.852-12.286 9.98 4.073 15.295L25 35.848l-13.288 8.6 4.074-15.295L3.5 19.173l15.805-.852z" />
+              </svg>
+            </label>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="error" ng-if="!isDataLoad">
+      An error occured during receiving data
+    </div>
   </div>
 
   <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true">
@@ -83,6 +77,8 @@
 
   <script src="lib/angular/angular.min.js"></script>
   <script src="app.js"></script>
+  <script src="services/dataService.js"></script>
+  <script src="filters/filters.js"></script>
   <script src="lib/pagination/dirPaginage.js"></script>
 </body>
 

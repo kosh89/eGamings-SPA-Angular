@@ -1,28 +1,42 @@
-angular
+const app = angular
   .module('myModule', ['angularUtils.directives.dirPagination'])
-  .controller('myController', function ($scope, $http) {
-    var successCallback = function (response) {
-      $scope.games = response.data;
-    };
-
-    var errorCallback = function (reason) {
-      $scope.error = reason.data;
-      document.querySelector('.info').textContent = 'An error occurred while loading games.';
-    };
-
-    $http({
-      method: 'GET',
-      url: 'games/games.json'})
-      .then(successCallback, errorCallback);
-
+  .controller('myController', function ($scope, dataService) {
     $scope.category = '';
     $scope.merchant = '';
-    $scope.gamesOnPage = 30;
-    $scope.sortColumn = 'Name.en';
+    $scope.isDataLoad = false;
 
-    $scope.reverseSort = false;
+    dataService.getGames()
+      .then((response) => {
+        $scope.isDataLoad = true;
+        $scope.games = response.data;
+      })
+      .catch(() => {
+        $scope.isDataLoad = false;
+      });
+
+    $scope.gamesOnPageValues = [
+      {text: 30, value: 30},
+      {text: 50, value: 50},
+      {text: 100, value: 100},
+      {text: 200, value: 200}
+    ];
+
+    $scope.sortColumnValues = [
+      {text: 'Name', value: 'Name.en'},
+      {text: 'Merchant', value: 'MerchantID'}
+    ];
+
+    $scope.reverseSortValues = [
+      {text: 'ASC', value: false},
+      {text: 'DESC', value: true}
+    ];
+
+    $scope.gamesOnPage = $scope.gamesOnPageValues[0];
+    $scope.sortColumn = $scope.sortColumnValues[0];
+    $scope.reverseSort = $scope.reverseSortValues[0];
+
     $scope.resetReverseSort = function () {
-      $scope.reverseSort = false;
+      $scope.reverseSort = $scope.reverseSortValues[0];
     }
 
     $scope.exactMatch = false;
@@ -39,8 +53,9 @@ angular
     };
 
     $scope.loadFromLocalStorage = function () {
-      if (localStorage.getItem('favoriteGames') !== null) {
-        $scope.favoriteGames = JSON.parse(localStorage.getItem('favoriteGames'));
+      const dataFromLocalStorage = localStorage.getItem('favoriteGames');
+      if (dataFromLocalStorage && typeof JSON.parse(dataFromLocalStorage) === 'object') {
+        $scope.favoriteGames = JSON.parse(dataFromLocalStorage);
         $scope.favoriteGames.forEach(function (id) {
           $scope.favoriteCheckboxes[id] = true;
         });
@@ -57,13 +72,6 @@ angular
         $scope.favoriteOnly = false;
         return true;
       };
-    };
-
-    $scope.filterFavorites = function (game) {
-      if ($scope.favoriteOnly) {
-        return $scope.favoriteGames.includes(game.ID);
-      }
-      return true;
     };
 
     $scope.showFavoriteFirst = function (game) {
