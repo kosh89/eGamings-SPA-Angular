@@ -52,7 +52,7 @@
         out of <span>{{games.games.length}}</span> games.
       </div>
 
-      <div class="pagination">
+      <div class="pagination" ng-if="Math.ceil((games.games | gamesFilter: this).length)">
         <button id="prev" ng-click="prevClick()" ng-disabled="startWith === 0"></button>
         <p class="pagination__text">
           Page {{ currentPage }} of {{ Math.ceil((games.games | gamesFilter: this).length / gamesOnPage.value) }}
