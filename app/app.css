@@ -122,3 +122,41 @@ ul {
   color: red;
   background-color: beige;
 }
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 20px 0;
+  align-items: center;
+}
+
+.pagination__text {
+  margin: 0 10px;
+  font-size: 18px;
+  color: #424242;
+}
+
+#prev,
+#next {
+  width: 0;
+  height: 0;
+  border: none;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 20px solid #0099cc;
+  background-color: transparent;
+  outline: none;
+}
+
+#next {
+  border-right: none;
+  border-left: 20px solid #0099cc;
+}
+
+#prev:disabled {
+  border-right: 20px solid rgba(0, 153, 204, 0.2);
+}
+#next:disabled {
+  border-left: 20px solid rgba(0, 153, 204, 0.2);
+}

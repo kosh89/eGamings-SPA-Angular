@@ -1,9 +1,10 @@
 const app = angular
-  .module('myModule', ['angularUtils.directives.dirPagination'])
+  .module('myModule', [])
   .controller('myController', function ($scope, dataService) {
     $scope.category = '';
     $scope.merchant = '';
     $scope.isDataLoad = false;
+    $scope.Math = window.Math;
 
     dataService.getGames()
       .then((response) => {
@@ -15,20 +16,20 @@ const app = angular
       });
 
     $scope.gamesOnPageValues = [
-      {text: 30, value: 30},
-      {text: 50, value: 50},
-      {text: 100, value: 100},
-      {text: 200, value: 200}
+      { text: 30, value: 30 },
+      { text: 50, value: 50 },
+      { text: 100, value: 100 },
+      { text: 200, value: 200 }
     ];
 
     $scope.sortColumnValues = [
-      {text: 'Name', value: 'Name.en'},
-      {text: 'Merchant', value: 'MerchantID'}
+      { text: 'Name', value: 'Name.en' },
+      { text: 'Merchant', value: 'MerchantID' }
     ];
 
     $scope.reverseSortValues = [
-      {text: 'ASC', value: false},
-      {text: 'DESC', value: true}
+      { text: 'ASC', value: false },
+      { text: 'DESC', value: true }
     ];
 
     $scope.gamesOnPage = $scope.gamesOnPageValues[0];
@@ -77,6 +78,26 @@ const app = angular
     $scope.showFavoriteFirst = function (game) {
       return $scope.favoriteGames.includes(game.ID.toString()) ? false : true;
     }
+
+    /* ===== pagination ===== */
+    $scope.startWith = 0;
+    $scope.currentPage = 1;
+
+    $scope.prevClick = () => {
+      $scope.currentPage -= 1;
+      $scope.startWith -= $scope.gamesOnPage.value;
+    }
+
+    $scope.nextClick = () => {
+      $scope.currentPage += 1;
+      $scope.startWith += $scope.gamesOnPage.value;
+    }
+
+    $scope.pageCountUpdate = () => {
+      $scope.startWith = 0;
+      $scope.currentPage = 1;
+    }
+    /* ===== pagination ===== */
 
     $scope.loadFromLocalStorage();
   })

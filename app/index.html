@@ -12,42 +12,58 @@
 
 <body ng-app="myModule">
   <div ng-controller="myController">
-    <div >
+    <div>
       <div class="filters">
         <div class="filters__item">
           Games on Page:
-          <select ng-model="gamesOnPage" ng-options="gamesOnPage.text for gamesOnPage in gamesOnPageValues track by gamesOnPage.value"></select>
+          <select ng-model="gamesOnPage"
+            ng-options="gamesOnPage.text for gamesOnPage in gamesOnPageValues track by gamesOnPage.value"
+            ng-change="pageCountUpdate()"></select>
         </div>
         <div class="filters__item">
           Sort By:
-          <select ng-model="sortColumn" ng-change="resetReverseSort()" ng-options="sortColumn.text for sortColumn in sortColumnValues track by sortColumn.value"></select>
-          <select ng-model="reverseSort" ng-options="reverseSort.text for reverseSort in reverseSortValues track by reverseSort.value"></select>
+          <select ng-model="sortColumn" ng-change="resetReverseSort()"
+            ng-options="sortColumn.text for sortColumn in sortColumnValues track by sortColumn.value"></select>
+          <select ng-model="reverseSort"
+            ng-options="reverseSort.text for reverseSort in reverseSortValues track by reverseSort.value"></select>
         </div>
         <div class="filters__item">
           Sort by category:
-          <select ng-model="category" ng-change="toggleExactMatch(category)">
+          <select ng-model="category" ng-change="toggleExactMatch(category); pageCountUpdate()">
             <option value="">All Categories</option>
             <option ng-repeat="category in games.categories" value="{{ category.ID }}">{{ category.Name.en }}</option>
           </select>
         </div>
         <div class="filters__item">
           Sort by merchant:
-          <select ng-model="merchant">
+          <select ng-model="merchant" ng-change="pageCountUpdate()">
             <option value="">All Merchants</option>
             <option ng-repeat="merchant in games.merchants" value="{{ merchant.ID }}">{{ merchant.Name }}</option>
           </select>
         </div>
         <div class="filters__item">
-          <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()"> Favorites only
+          <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()" ng-change="pageCountUpdate()">
+          Favorites only
         </div>
       </div>
+
       <div class="info">Filtered
         <span>{{ (games.games | gamesFilter: this).length }}</span>
-        out of <span>{{games.games.length}}</span> games.</div>
+        out of <span>{{games.games.length}}</span> games.
+      </div>
+
+      <div class="pagination">
+        <button id="prev" ng-click="prevClick()" ng-disabled="startWith === 0"></button>
+        <p class="pagination__text">
+          Page {{ currentPage }} of {{ Math.ceil((games.games | gamesFilter: this).length / gamesOnPage.value) }}
+        </p>
+        <button id="next" ng-click="nextClick()" ng-disabled="startWith + gamesOnPage.value >=
+          (games.games | gamesFilter: this).length"></button>
+      </div>
 
       <ul class="games">
         <li
-        dir-paginate="game in games.games | orderBy: sortColumn.value : reverseSort.value | orderBy: showFavoriteFirst | gamesFilter: this | itemsPerPage: gamesOnPage.value"
+          ng-repeat="game in games.games | orderBy : sortColumn.value : reverseSort.value | orderBy : showFavoriteFirst | gamesFilter : this | limitTo : gamesOnPage.value : startWith"
           class="games__item">
           <div class="games__info">
             <span title="{{game.Name.en}}">{{game.Name.en}}</span>
@@ -72,14 +88,10 @@
     </div>
   </div>
 
-  <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true">
-  </dir-pagination-controls>
-
   <script src="lib/angular/angular.min.js"></script>
   <script src="app.js"></script>
   <script src="services/dataService.js"></script>
   <script src="filters/filters.js"></script>
-  <script src="lib/pagination/dirPaginage.js"></script>
 </body>
 
 </html>
