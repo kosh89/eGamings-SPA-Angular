@@ -4,12 +4,12 @@ const app = angular
     $scope.category = '';
     $scope.merchant = '';
     $scope.isDataLoad = false;
-    $scope.Math = window.Math;
 
     dataService.getGames()
       .then((response) => {
         $scope.isDataLoad = true;
         $scope.games = response.data;
+
       })
       .catch(() => {
         $scope.isDataLoad = false;
@@ -75,9 +75,61 @@ const app = angular
       };
     };
 
-    $scope.showFavoriteFirst = function (game) {
-      return $scope.favoriteGames.includes(game.ID.toString()) ? false : true;
-    }
+    /* === filter === */
+    $scope.showFavoriteFirst = (game) => $scope.favoriteGames.includes(game.ID.toString()) ? false : true;
+
+    $scope.filterGames = (games) => {
+      $scope.filteredGames = games;
+
+      if ($scope.filteredGames) {
+        if ($scope.favoriteOnly) {
+          $scope.filteredGames = $scope.filteredGames.filter((game) => $scope.favoriteGames.includes(game.ID))
+        }
+
+        if ($scope.category) {
+          $scope.filteredGames = $scope.filteredGames.filter((game) => game.CategoryID.includes($scope.category));
+        }
+
+        if ($scope.merchant) {
+          $scope.filteredGames = $scope.filteredGames.filter((game) => game.MerchantID === $scope.merchant);
+        }
+
+        if ($scope.sortColumn.value === 'Name.en') {
+          $scope.filteredGames.sort(function (a, b) {
+            if (a.Name.en > b.Name.en) {
+              return 1;
+            }
+
+            if (a.Name.en < b.Name.en) {
+              return -1;
+            }
+
+            return 0;
+          })
+        }
+
+        if ($scope.sortColumn.value === 'MerchantID') {
+          $scope.filteredGames.sort(function (a, b) {
+            if (a.MerchantID > b.MerchantID) {
+              return 1;
+            }
+
+            if (a.MerchantID < b.MerchantID) {
+              return -1;
+            }
+
+            return 0;
+          })
+        }
+
+        if ($scope.reverseSort.value) {
+          $scope.filteredGames.reverse();
+        }
+
+        return $scope.filteredGames;
+      }
+    };
+    /* === filter === */
 
     /* ===== pagination ===== */
     $scope.startWith = 0;
@@ -93,10 +145,16 @@ const app = angular
       $scope.startWith += $scope.gamesOnPage.value;
     }
 
-    $scope.pageCountUpdate = () => {
+    $scope.currentPageReset = () => {
       $scope.startWith = 0;
       $scope.currentPage = 1;
     }
+
+    $scope.pageCount = () => {
+      if ($scope.filteredGames) {
+        return Math.ceil($scope.filteredGames.length / $scope.gamesOnPage.value)
+      }
+    };
     /* ===== pagination ===== */
 
     $scope.loadFromLocalStorage();

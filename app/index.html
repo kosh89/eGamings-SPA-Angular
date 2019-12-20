@@ -18,7 +18,7 @@
           Games on Page:
           <select ng-model="gamesOnPage"
             ng-options="gamesOnPage.text for gamesOnPage in gamesOnPageValues track by gamesOnPage.value"
-            ng-change="pageCountUpdate()"></select>
+            ng-change="currentPageReset()"></select>
         </div>
         <div class="filters__item">
           Sort By:
@@ -29,41 +29,39 @@
         </div>
         <div class="filters__item">
           Sort by category:
-          <select ng-model="category" ng-change="toggleExactMatch(category); pageCountUpdate()">
+          <select ng-model="category" ng-change="toggleExactMatch(category); currentPageReset()">
             <option value="">All Categories</option>
             <option ng-repeat="category in games.categories" value="{{ category.ID }}">{{ category.Name.en }}</option>
           </select>
         </div>
         <div class="filters__item">
           Sort by merchant:
-          <select ng-model="merchant" ng-change="pageCountUpdate()">
+          <select ng-model="merchant" ng-change="currentPageReset()">
             <option value="">All Merchants</option>
             <option ng-repeat="merchant in games.merchants" value="{{ merchant.ID }}">{{ merchant.Name }}</option>
           </select>
         </div>
         <div class="filters__item">
-          <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()" ng-change="pageCountUpdate()">
+          <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()" ng-change="currentPageReset()">
           Favorites only
         </div>
       </div>
 
-      <div class="info">Filtered
-        <span>{{ (games.games | gamesFilter: this).length }}</span>
-        out of <span>{{games.games.length}}</span> games.
+      <div class="info">
+        Filtered <span>{{ filteredGames.length }}</span> out of <span>{{ games.games.length }}</span> games.
       </div>
 
-      <div class="pagination" ng-if="Math.ceil((games.games | gamesFilter: this).length)">
+      <div class="pagination" ng-show="filteredGames.length">
         <button id="prev" ng-click="prevClick()" ng-disabled="startWith === 0"></button>
         <p class="pagination__text">
-          Page {{ currentPage }} of {{ Math.ceil((games.games | gamesFilter: this).length / gamesOnPage.value) }}
+          Page {{ currentPage }} of {{ pageCount() }}
         </p>
-        <button id="next" ng-click="nextClick()" ng-disabled="startWith + gamesOnPage.value >=
-          (games.games | gamesFilter: this).length"></button>
+        <button id="next" ng-click="nextClick()" ng-disabled="startWith + gamesOnPage.value >= filteredGames.length"></button>
       </div>
 
       <ul class="games">
         <li
-          ng-repeat="game in games.games | orderBy : sortColumn.value : reverseSort.value | orderBy : showFavoriteFirst | gamesFilter : this | limitTo : gamesOnPage.value : startWith"
+          ng-repeat="game in filterGames(games.games) | orderBy : showFavoriteFirst | limitTo : gamesOnPage.value : startWith"
           class="games__item">
           <div class="games__info">
             <span title="{{game.Name.en}}">{{game.Name.en}}</span>
@@ -91,7 +89,6 @@
   <script src="lib/angular/angular.min.js"></script>
   <script src="app.js"></script>
   <script src="services/dataService.js"></script>
-  <script src="filters/filters.js"></script>
 </body>
 
 </html>
