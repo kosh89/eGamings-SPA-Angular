@@ -77,7 +77,7 @@ const app = angular
     };
 
     /* === filter === */
-    $scope.showFavoriteFirst = (game) => $scope.favoriteGames.includes(game.ID.toString()) ? false : true;
+    /* $scope.showFavoriteFirst = (game) => $scope.favoriteGames.includes(game.ID.toString()) ? false : true; */
 
     $scope.filterGames = (games) => {
       if (games) {
@@ -88,6 +88,7 @@ const app = angular
         const favoriteGames = $scope.favoriteGames;
         const category = $scope.category;
         const merchant = $scope.merchant;
+        let favoriteNewIndex = 0;
 
         if (sortColumn === 'Name.en') {
           filteredGames.sort((a, b) => {
@@ -116,6 +117,14 @@ const app = angular
         if (merchant) {
           filteredGames = filteredGames.filter((game) => game.MerchantID === merchant);
         }
+
+        filteredGames.forEach((game, index) => {
+          if (favoriteGames.includes(game.ID.toString())) {
+            let favoriteGame = filteredGames.splice(index, 1)[0];
+            filteredGames.splice(favoriteNewIndex, 0, favoriteGame);
+            favoriteNewIndex += 1;
+          }
+        })
 
         return $scope.filteredGames = filteredGames;
       }

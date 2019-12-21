@@ -29,7 +29,7 @@
 
       <ul class="games">
         <li
-          ng-repeat="game in filterGames(games.games) | orderBy : showFavoriteFirst | limitTo : gamesOnPage.value : startWith"
+          ng-repeat="game in filterGames(games.games) | limitTo : gamesOnPage.value : startWith"
           class="games__item">
           <div class="games__info">
             <span title="{{game.Name.en}}">{{game.Name.en}}</span>
