@@ -85,6 +85,7 @@ const app = angular
         const sortColumn = $scope.sortColumn.value;
         const reverseSort = $scope.reverseSort.value;
         const favoriteOnly = $scope.favoriteOnly;
+        const favoriteGames = $scope.favoriteGames;
         const category = $scope.category;
         const merchant = $scope.merchant;
 
@@ -105,15 +106,15 @@ const app = angular
         }
 
         if (favoriteOnly) {
-          filteredGames = filteredGames.filter((game) => $scope.favoriteGames.includes(game.ID))
+          filteredGames = filteredGames.filter((game) => favoriteGames.includes(game.ID))
         }
 
         if (category) {
-          filteredGames = filteredGames.filter((game) => game.CategoryID.includes($scope.category));
+          filteredGames = filteredGames.filter((game) => game.CategoryID.includes(category));
         }
 
         if (merchant) {
-          filteredGames = filteredGames.filter((game) => game.MerchantID === $scope.merchant);
+          filteredGames = filteredGames.filter((game) => game.MerchantID === merchant);
         }
 
         return $scope.filteredGames = filteredGames;
