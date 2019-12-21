@@ -13,39 +13,7 @@
 <body ng-app="myModule">
   <div ng-controller="myController">
     <div>
-      <div class="filters">
-        <div class="filters__item">
-          Games on Page:
-          <select ng-model="gamesOnPage"
-            ng-options="gamesOnPage.text for gamesOnPage in gamesOnPageValues track by gamesOnPage.value"
-            ng-change="currentPageReset()"></select>
-        </div>
-        <div class="filters__item">
-          Sort By:
-          <select ng-model="sortColumn" ng-change="resetReverseSort()"
-            ng-options="sortColumn.text for sortColumn in sortColumnValues track by sortColumn.value"></select>
-          <select ng-model="reverseSort"
-            ng-options="reverseSort.text for reverseSort in reverseSortValues track by reverseSort.value"></select>
-        </div>
-        <div class="filters__item">
-          Sort by category:
-          <select ng-model="category" ng-change="toggleExactMatch(category); currentPageReset()">
-            <option value="">All Categories</option>
-            <option ng-repeat="category in games.categories" value="{{ category.ID }}">{{ category.Name.en }}</option>
-          </select>
-        </div>
-        <div class="filters__item">
-          Sort by merchant:
-          <select ng-model="merchant" ng-change="currentPageReset()">
-            <option value="">All Merchants</option>
-            <option ng-repeat="merchant in games.merchants" value="{{ merchant.ID }}">{{ merchant.Name }}</option>
-          </select>
-        </div>
-        <div class="filters__item">
-          <input type="checkbox" ng-model="favoriteOnly" ng-disabled="isFavoritesEmpty()" ng-change="currentPageReset()">
-          Favorites only
-        </div>
-      </div>
+      <div class="filters" ng-include="filtersTemplate"></div>
 
       <div class="info">
         Filtered <span>{{ filteredGames.length }}</span> out of <span>{{ games.games.length }}</span> games.

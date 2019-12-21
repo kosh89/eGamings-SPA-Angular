@@ -1,6 +1,7 @@
 const app = angular
   .module('myModule', [])
   .controller('myController', function ($scope, dataService) {
+    $scope.filtersTemplate = 'templates/Filters.html';
     $scope.category = '';
     $scope.merchant = '';
     $scope.isDataLoad = false;
@@ -79,21 +80,9 @@ const app = angular
     $scope.showFavoriteFirst = (game) => $scope.favoriteGames.includes(game.ID.toString()) ? false : true;
 
     $scope.filterGames = (games) => {
-      $scope.filteredGames = games;
+      $scope.filteredGames = games.slice();
 
       if ($scope.filteredGames) {
-        if ($scope.favoriteOnly) {
-          $scope.filteredGames = $scope.filteredGames.filter((game) => $scope.favoriteGames.includes(game.ID))
-        }
-
-        if ($scope.category) {
-          $scope.filteredGames = $scope.filteredGames.filter((game) => game.CategoryID.includes($scope.category));
-        }
-
-        if ($scope.merchant) {
-          $scope.filteredGames = $scope.filteredGames.filter((game) => game.MerchantID === $scope.merchant);
-        }
-
         if ($scope.sortColumn.value === 'Name.en') {
           $scope.filteredGames.sort(function (a, b) {
             if (a.Name.en > b.Name.en) {
@@ -110,20 +99,24 @@ const app = angular
 
         if ($scope.sortColumn.value === 'MerchantID') {
           $scope.filteredGames.sort(function (a, b) {
-            if (a.MerchantID > b.MerchantID) {
-              return 1;
-            }
-
-            if (a.MerchantID < b.MerchantID) {
-              return -1;
-            }
-
-            return 0;
+            return a.MerchantID - b.MerchantID;
           })
         }
 
         if ($scope.reverseSort.value) {
           $scope.filteredGames.reverse();
+        }
+
+        if ($scope.favoriteOnly) {
+          $scope.filteredGames = $scope.filteredGames.filter((game) => $scope.favoriteGames.includes(game.ID))
+        }
+
+        if ($scope.category) {
+          $scope.filteredGames = $scope.filteredGames.filter((game) => game.CategoryID.includes($scope.category));
+        }
+
+        if ($scope.merchant) {
+          $scope.filteredGames = $scope.filteredGames.filter((game) => game.MerchantID === $scope.merchant);
         }
 
         return $scope.filteredGames;
