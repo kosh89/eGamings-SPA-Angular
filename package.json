@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "angular": "1.7.x",
-    "bootstrap": "3.3.x"
+    "bootstrap": "3.4.x"
   },
   "devDependencies": {
     "angular-mocks": "1.7.x",
