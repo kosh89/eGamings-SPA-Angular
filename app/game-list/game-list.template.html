@@ -1,0 +1,94 @@
+<div class="filters">
+  <div class="filters__item">
+    Games on Page:
+    <select
+      ng-model="gamesOnPage"
+      ng-options="gamesOnPage.text for gamesOnPage in gamesOnPageValues track by gamesOnPage.value"
+      ng-change="currentPageReset()">
+    </select>
+  </div>
+  <div class="filters__item">
+    Sort By:
+    <select
+      ng-model="sortColumn"
+      ng-options="sortColumn.text for sortColumn in sortColumnValues track by sortColumn.value"
+      ng-change="resetReverseSort()">
+    </select>
+    <select
+      ng-model="reverseSort"
+      ng-options="reverseSort.text for reverseSort in reverseSortValues track by reverseSort.value">
+    </select>
+  </div>
+  <div class="filters__item">
+    Sort by category:
+    <select
+      ng-model="category"
+      ng-change="currentPageReset()">
+      <option value="">All Categories</option>
+      <option ng-repeat="category in games.categories" value="{{ category.ID }}">{{ category.Name.en }}</option>
+    </select>
+  </div>
+  <div class="filters__item">
+    Sort by merchant:
+    <select
+      ng-model="merchant"
+      ng-change="currentPageReset()">
+      <option value="">All Merchants</option>
+      <option ng-repeat="merchant in games.merchants" value="{{ merchant.ID }}">{{ merchant.Name }}</option>
+    </select>
+  </div>
+  <div class="filters__item">
+    <input
+      type="checkbox"
+      ng-model="favoriteOnly"
+      ng-disabled="isFavoritesEmpty()"
+      ng-change="currentPageReset()">
+    Favorites only
+  </div>
+</div>
+
+<div class="info">
+  Filtered {{ filteredGames.length }} out of {{ games.games.length }} games.
+</div>
+
+<div class="pagination" ng-show="filteredGames.length">
+  <button id="prev"
+    ng-click="prevClick()"
+    ng-disabled="startWith === 0">
+  </button>
+
+  <p class="pagination__text">
+    Page {{ currentPage }} of {{ pageCount() }}
+  </p>
+
+  <button id="next"
+    ng-click="nextClick()"
+    ng-disabled="startWith + gamesOnPage.value >= filteredGames.length">
+  </button>
+</div>
+
+<ul class="games">
+  <li class="games__item"
+    ng-repeat="game in filterGames(games.games) | limitTo : gamesOnPage.value : startWith">
+    <div class="games__info">
+      <span title="{{game.Name.en}}">{{game.Name.en}}</span>
+      <img ng-src="{{game.ImageFullPath}}" alt="{{game.Name.en}}">
+    </div>
+    <div class="games__buttons">
+      <a href="#!games/{{game.ID}}" class="games__start">START</a>
+      <input type="checkbox" class="visually-hidden games__checkbox" id="g{{game.ID}}"
+        ng-model="favoriteCheckboxes[game.ID]"
+        ng-change="favoriteClick(favoriteCheckboxes[game.ID], game.ID)">
+      <label class="games__favorite" for="g{{game.ID}}">
+        <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 50 50">
+          <path stroke="#ffbb00" stroke-miterlimit="10" stroke-width="2"
+            d="M25 3.553l5.695 14.768 15.805.852-12.286 9.98 4.073 15.295L25 35.848l-13.288 8.6 4.074-15.295L3.5 19.173l15.805-.852z" />
+        </svg>
+      </label>
+    </div>
+  </li>
+</ul>
+
+<div class="error" ng-if="!isDataLoad">
+  An error occured during receiving data
+</div>

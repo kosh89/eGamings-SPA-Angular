@@ -7,56 +7,17 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
   <link rel="stylesheet" href="app.css">
-  <title>Document</title>
+  <title>eG-gameApp</title>
 </head>
 
-<body ng-app="myModule">
-  <div ng-controller="myController">
-    <div>
-      <div class="filters" ng-include="filtersTemplate"></div>
-
-      <div class="info">
-        Filtered <span>{{ filteredGames.length }}</span> out of <span>{{ games.games.length }}</span> games.
-      </div>
-
-      <div class="pagination" ng-show="filteredGames.length">
-        <button id="prev" ng-click="prevClick()" ng-disabled="startWith === 0"></button>
-        <p class="pagination__text">
-          Page {{ currentPage }} of {{ pageCount() }}
-        </p>
-        <button id="next" ng-click="nextClick()" ng-disabled="startWith + gamesOnPage.value >= filteredGames.length"></button>
-      </div>
-
-      <ul class="games">
-        <li
-          ng-repeat="game in filterGames(games.games) | limitTo : gamesOnPage.value : startWith"
-          class="games__item">
-          <div class="games__info">
-            <span title="{{game.Name.en}}">{{game.Name.en}}</span>
-            <img ng-src="{{game.ImageFullPath}}" alt="{{game.Name.en}}">
-          </div>
-          <div class="games__buttons">
-            <a href="#!games/{{game.ID}}" class="games__start">START</a>
-            <input type="checkbox" class="visually-hidden games__checkbox" id="g{{game.ID}}"
-              ng-model="favoriteCheckboxes[game.ID]" ng-change="favoriteAction(favoriteCheckboxes[game.ID], game.ID)">
-            <label class="games__favorite" for="g{{game.ID}}">
-              <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 50 50">
-                <path stroke="#ffbb00" stroke-miterlimit="10" stroke-width="2"
-                  d="M25 3.553l5.695 14.768 15.805.852-12.286 9.98 4.073 15.295L25 35.848l-13.288 8.6 4.074-15.295L3.5 19.173l15.805-.852z" />
-              </svg>
-            </label>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="error" ng-if="!isDataLoad">
-      An error occured during receiving data
-    </div>
-  </div>
+<body ng-app="gameApp">
+  <game-list></game-list>
 
   <script src="lib/angular/angular.min.js"></script>
-  <script src="app.js"></script>
+  <script src="app.module.js"></script>
   <script src="services/dataService.js"></script>
+  <script src="game-list/game-list.module.js"></script>
+  <script src="game-list/game-list.component.js"></script>
 </body>
 
 </html>

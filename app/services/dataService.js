@@ -1,4 +1,5 @@
-app.factory('dataService', function ($http) {
+gameApp.
+  factory('dataService', function ($http) {
   return {
     getGames: function () {
       return $http({
